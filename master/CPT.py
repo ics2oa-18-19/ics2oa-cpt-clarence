@@ -2,19 +2,28 @@ import math
 import random
 import arcade
 
+# Screen
 WIDTH = 1200
 HEIGHT = 670
 
-current_screen = "menu"
+# Meteors
+meteor1_x_positions = []
+meteor1_y_positions = []
 
-meteor_x_positions = []
-meteor_y_positions = []
+meteor2_x_positions = []
+meteor2_y_positions = []
 
 for _ in range(1):
     x = random.randrange(0, WIDTH)
     y = random.randrange(HEIGHT, HEIGHT*2)
-    meteor_x_positions.append(x)
-    meteor_y_positions.append(y)
+    meteor1_x_positions.append(x)
+    meteor1_y_positions.append(y)
+
+for _ in range(5):
+    x = random.randrange(0, WIDTH)
+    y = random.randrange(HEIGHT, HEIGHT * 2)
+    meteor2_x_positions.append(x)
+    meteor2_y_positions.append(y)
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -33,17 +42,26 @@ def setup():
 
 def update(delta_time):
     for index in range(1):
-        meteor_y_positions[index] -= 1
-        if meteor_y_positions[index] < -175:
-            meteor_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
-            meteor_x_positions[index] = random.randrange(200, 1000)
+        meteor1_y_positions[index] -= 1
+        if meteor1_y_positions[index] < -175:
+            meteor1_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
+            meteor1_x_positions[index] = random.randrange(200, 1000)
+
+    for index in range(5):
+        meteor2_y_positions[index] -= 3
+        if meteor2_y_positions[index] < -175:
+            meteor2_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
+            meteor2_x_positions[index] = random.randrange(200, 1000)
 
 
 def on_draw():
     arcade.start_render()
     # Draw in here...
-    for x, y in zip(meteor_x_positions, meteor_y_positions):
-        draw_meteors(x, y)
+    for x, y in zip(meteor1_x_positions, meteor1_y_positions):
+        draw_meteor1(x, y)
+
+    for x, y in zip(meteor2_x_positions, meteor2_y_positions):
+        draw_meteor2(x, y)
 
 
 def on_key_press(key, modifiers):
@@ -57,8 +75,14 @@ def on_key_release(key, modifiers):
 def on_mouse_press(x, y, button, modifiers):
     pass
 
-def draw_meteors(x, y):
+def draw_meteor1(x, y):
     arcade.draw_circle_filled(x, y, 125, arcade.color.BROWN_NOSE)
+
+def draw_meteor2(x, y):
+    arcade.draw_circle_filled(x, y, 50, arcade.color.BROWN_NOSE)
+
+def draw_ship(x, y):
+    arcade.draw_circle_filled(x, y, 50, arcade.color.BLUE)
 
 
 if __name__ == '__main__':

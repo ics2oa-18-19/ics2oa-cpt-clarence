@@ -3,8 +3,8 @@ import random
 import arcade
 
 # Screen
-WIDTH = 1200
-HEIGHT = 670
+WIDTH = 1365
+HEIGHT = 710
 
 # Astroids
 meteor1_x_positions = []
@@ -41,9 +41,7 @@ ship_y_position = 75
 
 left_pressed = False
 right_pressed = False
-movement = 50
-
-
+movement = 15
 
 
 def setup():
@@ -63,13 +61,12 @@ def setup():
 
 def update(delta_time):
 # ship
-    global left_pressed, ship_x_position
+    global left_pressed, right_pressed, ship_x_position
     if left_pressed:
         ship_x_position -= movement
 
-    global right_pressed, ship_x_position
-    if right_pressed:
-        ship_x_position -= movement
+    elif right_pressed:
+        ship_x_position += movement
 
 
 # Asteroids
@@ -92,11 +89,6 @@ def update(delta_time):
             meteor3_x_positions[index] = random.randrange(200, 1000)
 
 
-
-
-
-
-
 def on_draw():
     arcade.start_render()
     # Draw in here...
@@ -115,9 +107,11 @@ def on_draw():
 
 def on_key_press(key, modifiers):
     global left_pressed, right_pressed
-    if key == arcade.key.D:
+    if key == arcade.key.A:
         left_pressed = True
 
+    elif key == arcade.key.D:
+        right_pressed = True
 
 def on_key_release(key, modifiers):
     global left_pressed, right_pressed
@@ -126,7 +120,7 @@ def on_key_release(key, modifiers):
 
     elif key == arcade.key.D:
         right_pressed = False
-        
+
 def on_mouse_press(x, y, button, modifiers):
     pass
 

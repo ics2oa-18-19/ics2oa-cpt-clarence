@@ -3,41 +3,42 @@ import random
 import arcade
 
 # Screen
-WIDTH = 1365
+WIDTH = 1300
 HEIGHT = 710
 
 # Astroids
-meteor1_x_positions = []
-meteor1_y_positions = []
+asteroid1_x_positions = []
+asteroid1_y_positions = []
 
-meteor2_x_positions = []
-meteor2_y_positions = []
+asteroid2_x_positions = []
+asteroid2_y_positions = []
 
-meteor3_x_positions = []
-meteor3_y_positions = []
-
+asteroid3_x_positions = []
+asteroid3_y_positions = []
 
 for _ in range(1):
     x = random.randrange(0, WIDTH)
     y = random.randrange(HEIGHT, HEIGHT*2)
-    meteor1_x_positions.append(x)
-    meteor1_y_positions.append(y)
+    asteroid1_x_positions.append(x)
+    asteroid1_y_positions.append(y)
 
 for _ in range(2):
     x = random.randrange(0, WIDTH)
     y = random.randrange(HEIGHT, HEIGHT * 2)
-    meteor2_x_positions.append(x)
-    meteor2_y_positions.append(y)
+    asteroid2_x_positions.append(x)
+    asteroid2_y_positions.append(y)
 
 for _ in range(4):
     x = random.randrange(0, WIDTH)
     y = random.randrange(HEIGHT, HEIGHT * 2)
-    meteor3_x_positions.append(x)
-    meteor3_y_positions.append(y)
+    asteroid3_x_positions.append(x)
+    asteroid3_y_positions.append(y)
 
 # Ship
 ship_x_position = WIDTH/2
 ship_y_position = 75
+
+
 
 left_pressed = False
 right_pressed = False
@@ -60,6 +61,7 @@ def setup():
 
 
 def update(delta_time):
+
 # ship
     global left_pressed, right_pressed, ship_x_position
     if left_pressed:
@@ -68,50 +70,56 @@ def update(delta_time):
     elif right_pressed:
         ship_x_position += movement
 
+    if ship_x_position > WIDTH - 50:
+        ship_x_position = WIDTH - 50
+
+    elif ship_x_position < 50:
+        ship_x_position = 50
 
 # Asteroids
     for index in range(1):
-        meteor1_y_positions[index] -= 1
-        if meteor1_y_positions[index] < -175:
-            meteor1_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
-            meteor1_x_positions[index] = random.randrange(200, 1000)
+        asteroid1_y_positions[index] -= 1
+        if asteroid1_y_positions[index] < -175:
+            asteroid1_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
+            asteroid1_x_positions[index] = random.randrange(200, 1000)
 
     for index in range(2):
-        meteor2_y_positions[index] -= 3
-        if meteor2_y_positions[index] < -175:
-            meteor2_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
-            meteor2_x_positions[index] = random.randrange(200, 1000)
+        asteroid2_y_positions[index] -= 3
+        if asteroid2_y_positions[index] < -175:
+            asteroid2_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
+            asteroid2_x_positions[index] = random.randrange(200, 1000)
 
     for index in range(4):
-        meteor3_y_positions[index] -= 5
-        if meteor3_y_positions[index] < -175:
-            meteor3_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
-            meteor3_x_positions[index] = random.randrange(200, 1000)
+        asteroid3_y_positions[index] -= 5
+        if asteroid3_y_positions[index] < -175:
+            asteroid3_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
+            asteroid3_x_positions[index] = random.randrange(200, 1000)
 
 
 def on_draw():
     arcade.start_render()
     # Draw in here...
+
 #Ship
     draw_ship(ship_x_position, ship_y_position)
 
 # asteroids
-    for x, y in zip(meteor1_x_positions, meteor1_y_positions):
+    for x, y in zip(asteroid1_x_positions, asteroid1_y_positions):
         draw_meteor1(x, y)
 
-    for x, y in zip(meteor2_x_positions, meteor2_y_positions):
+    for x, y in zip(asteroid2_x_positions, asteroid2_y_positions):
         draw_meteor2(x, y)
 
-    for x, y in zip(meteor3_x_positions, meteor3_y_positions):
+    for x, y in zip(asteroid3_x_positions, asteroid3_y_positions):
         draw_meteor3(x, y)
 
 def on_key_press(key, modifiers):
     global left_pressed, right_pressed
     if key == arcade.key.A:
-        left_pressed = True
+            left_pressed = True
 
     elif key == arcade.key.D:
-        right_pressed = True
+            right_pressed = True
 
 def on_key_release(key, modifiers):
     global left_pressed, right_pressed
@@ -124,6 +132,8 @@ def on_key_release(key, modifiers):
 def on_mouse_press(x, y, button, modifiers):
     pass
 
+# Other Functions
+
 def draw_meteor1(x, y):
     arcade.draw_circle_filled(x, y, 125, arcade.color.BROWN_NOSE)
 
@@ -135,7 +145,7 @@ def draw_meteor3(x, y):
 
 def draw_ship(x, y):
     arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
-
+    arcade.draw_rectangle_filled(ship_x_position, ship_y_position, 70, 100, arcade.color.RED)
 
 if __name__ == '__main__':
     setup()

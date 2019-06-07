@@ -68,6 +68,8 @@ def update(delta_time):
     elif right_pressed:
         ship_x_position += movement
 
+    if ship_x_position > 50 and ship_x_position < 1315:
+        left_pressed and right_pressed = True
 
 # Asteroids
     for index in range(1):

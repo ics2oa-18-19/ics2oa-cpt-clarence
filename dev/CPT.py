@@ -6,7 +6,8 @@ import arcade
 WIDTH = 1300
 HEIGHT = 710
 
-# Astroids
+# Asteroids
+
 asteroid1_x_positions = []
 asteroid1_y_positions = []
 
@@ -34,15 +35,25 @@ for _ in range(4):
     asteroid3_x_positions.append(x)
     asteroid3_y_positions.append(y)
 
+large_asteroid = [x, y, 125, arcade.color.BROWN_NOSE]
+Medium_asteroid = [x, y, 75, arcade.color.LIGHT_BROWN]
+Small_asteroid = [x, y, 40, arcade.color.COCOA_BROWN]
+
+
 # Ship
 ship_x_position = WIDTH/2
 ship_y_position = 75
+ship = [ship_x_position, ship_y_position, 50, arcade.color.BLUE]
 
-
-
+#controls
 left_pressed = False
 right_pressed = False
-movement = 15
+movement = 20
+
+heart1_x = 50
+heart1_y = 50
+heart1 = [heart1_x, heart1_y, ]
+# Health = [heart1, heart2, heart3]
 
 
 def setup():
@@ -95,6 +106,27 @@ def update(delta_time):
             asteroid3_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
             asteroid3_x_positions[index] = random.randrange(200, 1000)
 
+# Collision
+    a = large_asteroid[0] - ship[0]
+    b = large_asteroid[1] - ship[1]
+    dist = math.sqrt(a ** 2 + b ** 2)
+
+    if dist < large_asteroid[2] + ship[2]:
+        print("they are touching")
+
+    a = Medium_asteroid[0] - ship[0]
+    b = Medium_asteroid[1] - ship[1]
+    dist = math.sqrt(a ** 2 + b ** 2)
+
+    if dist < Medium_asteroid[2] + ship[2]:
+        print("they are touching")
+
+    a = Small_asteroid[0] - ship[0]
+    b = Small_asteroid[1] - ship[1]
+    dist = math.sqrt(a ** 2 + b ** 2)
+
+    if dist < Small_asteroid[2] + ship[2]:
+        print("they are touching")
 
 def on_draw():
     arcade.start_render()
@@ -132,8 +164,10 @@ def on_key_release(key, modifiers):
 def on_mouse_press(x, y, button, modifiers):
     pass
 
-# Other Functions
+# Screen Functions
 
+
+# Play Functions
 def draw_meteor1(x, y):
     arcade.draw_circle_filled(x, y, 125, arcade.color.BROWN_NOSE)
 
@@ -146,6 +180,9 @@ def draw_meteor3(x, y):
 def draw_ship(x, y):
     arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
     arcade.draw_rectangle_filled(ship_x_position, ship_y_position, 70, 100, arcade.color.RED)
+
+def draw_heart1(x,y):
+    arcade.draw_circle_filled(heart1_x, heart1_y, 25, arcade.color.RED)
 
 if __name__ == '__main__':
     setup()

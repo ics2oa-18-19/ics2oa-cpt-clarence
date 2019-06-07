@@ -178,7 +178,7 @@ def draw_meteor3(x, y):
 
 def draw_ship(x, y):
     arcade.draw_circle_filled(ship[1], ship[2], ship[3], arcade.color.BLUE)
-    arcade.draw_rectangle_filled(ship[1], ship[2], 50, 100, arcade.color.RED)
+    arcade.draw_rectangle_filled(ship[1], ship[2], ship[3], 100, arcade.color.RED)
 
 def draw_heart1(x,y):
     arcade.draw_circle_filled(heart1_x, heart1_y, 25, arcade.color.RED)

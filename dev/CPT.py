@@ -39,7 +39,6 @@ large_asteroid = [x, y, 125, arcade.color.BROWN_NOSE]
 Medium_asteroid = [x, y, 75, arcade.color.LIGHT_BROWN]
 Small_asteroid = [x, y, 40, arcade.color.COCOA_BROWN]
 
-
 # Ship
 ship_x_position = WIDTH/2
 ship_y_position = 75
@@ -114,16 +113,16 @@ def update(delta_time):
     if dist < large_asteroid[2] + ship[2]:
         print("they are touching")
 
-    a = Medium_asteroid[0] - ship[0]
-    b = Medium_asteroid[1] - ship[1]
-    dist = math.sqrt(a ** 2 + b ** 2)
+    c = Medium_asteroid[0] - ship[0]
+    d = Medium_asteroid[1] - ship[1]
+    dist = math.sqrt(c ** 2 + d ** 2)
 
     if dist < Medium_asteroid[2] + ship[2]:
         print("they are touching")
 
-    a = Small_asteroid[0] - ship[0]
-    b = Small_asteroid[1] - ship[1]
-    dist = math.sqrt(a ** 2 + b ** 2)
+    e = Small_asteroid[0] - ship[0]
+    f = Small_asteroid[1] - ship[1]
+    dist = math.sqrt(e ** 2 + f ** 2)
 
     if dist < Small_asteroid[2] + ship[2]:
         print("they are touching")
@@ -178,8 +177,8 @@ def draw_meteor3(x, y):
     arcade.draw_circle_filled(x, y, 40, arcade.color.COCOA_BROWN)
 
 def draw_ship(x, y):
-    arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
-    arcade.draw_rectangle_filled(ship_x_position, ship_y_position, 70, 100, arcade.color.RED)
+    arcade.draw_circle_filled(ship[1], ship[2], ship[3], arcade.color.BLUE)
+    arcade.draw_rectangle_filled(ship[1], ship[2], 50, 100, arcade.color.RED)
 
 def draw_heart1(x,y):
     arcade.draw_circle_filled(heart1_x, heart1_y, 25, arcade.color.RED)

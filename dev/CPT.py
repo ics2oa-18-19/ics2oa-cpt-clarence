@@ -108,23 +108,23 @@ def update(delta_time):
 # Collision
     a = large_asteroid[0] - ship[0]
     b = large_asteroid[1] - ship[1]
-    dist = math.sqrt(a ** 2 + b ** 2)
+    dist1 = math.sqrt(a ** 2 + b ** 2)
 
-    if dist < large_asteroid[2] + ship[2]:
+    if dist1 < large_asteroid[2] + ship[2]:
         print("they are touching")
 
     c = Medium_asteroid[0] - ship[0]
     d = Medium_asteroid[1] - ship[1]
-    dist = math.sqrt(c ** 2 + d ** 2)
+    dist2 = math.sqrt(c ** 2 + d ** 2)
 
-    if dist < Medium_asteroid[2] + ship[2]:
+    if dist2 < Medium_asteroid[2] + ship[2]:
         print("they are touching")
 
     e = Small_asteroid[0] - ship[0]
     f = Small_asteroid[1] - ship[1]
-    dist = math.sqrt(e ** 2 + f ** 2)
+    dist3 = math.sqrt(e ** 2 + f ** 2)
 
-    if dist < Small_asteroid[2] + ship[2]:
+    if dist3 < Small_asteroid[2] + ship[2]:
         print("they are touching")
 
 def on_draw():

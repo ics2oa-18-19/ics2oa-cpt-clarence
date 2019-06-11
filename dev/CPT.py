@@ -132,6 +132,7 @@ def on_draw():
     arcade.start_render()
     # Draw in here...
     if current_screen == "play":
+        arcade.set_background_color(arcade.color.BLACK)
 #Ship
         draw_ship(ship_x_position, ship_y_position)
 
@@ -144,6 +145,12 @@ def on_draw():
 
         for x, y in zip(asteroid3_x_positions, asteroid3_y_positions):
             draw_meteor3(x, y)
+
+    if current_screen == "instructions":
+        draw_instructions()
+
+    if current_screen == "menu":
+        draw_menu()
 
 def on_key_press(key, modifiers):
     global left_pressed, right_pressed, current_screen
@@ -182,11 +189,11 @@ def on_mouse_press(x, y, button, modifiers):
 def draw_menu():
     arcade.set_background_color(arcade.color.WHITE_SMOKE)
     arcade.draw_text("Main Menu", WIDTH/2, HEIGHT/2,
-                     arcade.color.WHITE, font_size=30, anchor_x="center")
+                     arcade.color.BLACK, font_size=30, anchor_x="center")
     arcade.draw_text("I for Instructions", WIDTH/2, HEIGHT/2-60,
-                     arcade.color.WHITE, font_size=20, anchor_x="center")
+                     arcade.color.BLACK, font_size=20, anchor_x="center")
     arcade.draw_text("P to Play", WIDTH/2, HEIGHT/2-90,
-                     arcade.color.WHITE, font_size=20, anchor_x="center")
+                     arcade.color.BLACK, font_size=20, anchor_x="center")
 
 
 def draw_instructions():
@@ -208,7 +215,6 @@ def draw_meteor3(x, y):
 
 def draw_ship(x, y):
     arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
-    arcade.draw_rectangle_filled(ship_x_position, ship_y_position, 70, 100, arcade.color.RED)
 
 def draw_heart1(x,y):
     arcade.draw_circle_filled(heart1_x, heart1_y, 25, arcade.color.RED)

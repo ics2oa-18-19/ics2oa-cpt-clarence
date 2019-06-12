@@ -1,14 +1,19 @@
 import math
 import random
 import arcade
+import os
+
+file_path = os.path.dirname(os.path.abspath(__file__))
+os.chdir(file_path)
+
+tile_img = arcade.load_texture('images/Background1 CPT.png')
 
 # Screen
 WIDTH = 1300
-HEIGHT = 710
-
+HEIGHT = 740
 current_screen = "menu"
-# Asteroids
 
+# Asteroids
 asteroid1_x_positions = []
 asteroid1_y_positions = []
 
@@ -49,11 +54,15 @@ left_pressed = False
 right_pressed = False
 movement = 20
 
+# Health = [heart1, heart2, heart3]
 heart1_x = 50
 heart1_y = 50
-heart1 = [heart1_x, heart1_y, ]
-# Health = [heart1, heart2, heart3]
 
+heart2_x = 110
+heart2_y = 50
+
+heart3_x = 170
+heart3_y = 50
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -69,11 +78,10 @@ def setup():
 
     arcade.run()
 
-
 def update(delta_time):
 
 # ship
-    global left_pressed, right_pressed, ship_x_position, large_asteroid, Medium_asteroid, Small_asteroid, current_screen
+    global left_pressed, right_pressed, ship_x_position, large_asteroid, Medium_asteroid, Small_asteroid, current_screen, ship
     if current_screen == "play":
         if left_pressed:
             ship_x_position -= movement
@@ -112,21 +120,21 @@ def update(delta_time):
     dist = math.sqrt(a ** 2 + b ** 2)
 
     if dist < large_asteroid[2] + ship[2]:
-        current_screen = "menu"
+        current_screen = "gameover"
 
     a = Medium_asteroid[0] - ship[0]
     b = Medium_asteroid[1] - ship[1]
     dist = math.sqrt(a ** 2 + b ** 2)
 
     if dist < Medium_asteroid[2] + ship[2]:
-        current_screen = "menu"
+        current_screen = "gameover"
 
     a = Small_asteroid[0] - ship[0]
     b = Small_asteroid[1] - ship[1]
     dist = math.sqrt(a ** 2 + b ** 2)
 
     if dist < Small_asteroid[2] + ship[2]:
-        current_screen = "menu"
+        current_screen = "gameover"
 
 def on_draw():
     arcade.start_render()
@@ -138,19 +146,21 @@ def on_draw():
 
 # asteroids
         for x, y in zip(asteroid1_x_positions, asteroid1_y_positions):
-            draw_meteor1(x, y)
+            draw_asteroid1(x, y)
 
         for x, y in zip(asteroid2_x_positions, asteroid2_y_positions):
-            draw_meteor2(x, y)
+            draw_asteroid2(x, y)
 
         for x, y in zip(asteroid3_x_positions, asteroid3_y_positions):
-            draw_meteor3(x, y)
-
-    if current_screen == "instructions":
+            draw_asteroid3(x, y)
+#Hearts
+        draw_hearts(x, y)
+    elif current_screen == "instructions":
         draw_instructions()
-
-    if current_screen == "menu":
+    elif current_screen == "menu":
         draw_menu()
+    elif current_screen == "gameover":
+        draw_gameover()
 
 def on_key_press(key, modifiers):
     global left_pressed, right_pressed, current_screen
@@ -163,7 +173,6 @@ def on_key_press(key, modifiers):
 
 def on_key_release(key, modifiers):
     global left_pressed, right_pressed, current_screen
-
     if current_screen == "menu":
         if key == arcade.key.I:
             current_screen = "instructions"
@@ -187,14 +196,13 @@ def on_mouse_press(x, y, button, modifiers):
 
 # Screen Functions
 def draw_menu():
-    arcade.set_background_color(arcade.color.WHITE_SMOKE)
+    arcade.draw_texture_rectangle(100, 200, tile_img.width, tile_img.height, tile_img)
     arcade.draw_text("Main Menu", WIDTH/2, HEIGHT/2,
                      arcade.color.BLACK, font_size=30, anchor_x="center")
-    arcade.draw_text("I for Instructions", WIDTH/2, HEIGHT/2-60,
+    arcade.draw_text("I for Instructions", WIDTH/2, HEIGHT/2-90,
                      arcade.color.BLACK, font_size=20, anchor_x="center")
-    arcade.draw_text("P to Play", WIDTH/2, HEIGHT/2-90,
+    arcade.draw_text("P to Play", WIDTH/2, HEIGHT/2-60,
                      arcade.color.BLACK, font_size=20, anchor_x="center")
-
 
 def draw_instructions():
     arcade.set_background_color(arcade.color.BLUE_GRAY)
@@ -203,21 +211,29 @@ def draw_instructions():
     arcade.draw_text("ESC to go back", WIDTH/2, HEIGHT/2-60,
                      arcade.color.BLACK, font_size=20, anchor_x="center")
 
+def draw_gameover():
+    arcade.set_background_color(arcade.color.WHITE_SMOKE)
+    arcade.draw_text("Game Over", WIDTH/2, HEIGHT/2,
+                     arcade.color.BLACK, font_size=30, anchor_x="center")
+
+
 # Play Functions
-def draw_meteor1(x, y):
+def draw_asteroid1(x, y):
     arcade.draw_circle_filled(x, y, 125, arcade.color.BROWN_NOSE)
 
-def draw_meteor2(x, y):
+def draw_asteroid2(x, y):
     arcade.draw_circle_filled(x, y, 75, arcade.color.LIGHT_BROWN)
 
-def draw_meteor3(x, y):
+def draw_asteroid3(x, y):
     arcade.draw_circle_filled(x, y, 40, arcade.color.COCOA_BROWN)
 
 def draw_ship(x, y):
     arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
 
-def draw_heart1(x,y):
+def draw_hearts(x, y):
     arcade.draw_circle_filled(heart1_x, heart1_y, 25, arcade.color.RED)
+    arcade.draw_circle_filled(heart2_x, heart2_y, 25, arcade.color.RED)
+    arcade.draw_circle_filled(heart3_x, heart3_y, 25, arcade.color.RED)
 
 if __name__ == '__main__':
     setup()

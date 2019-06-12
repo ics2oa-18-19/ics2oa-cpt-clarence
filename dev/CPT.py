@@ -6,8 +6,6 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(file_path)
 
-tile_img = arcade.load_texture('images/Background1 CPT.png')
-
 # Screen
 WIDTH = 1300
 HEIGHT = 740
@@ -52,17 +50,24 @@ ship = [ship_x_position, ship_y_position, 50, arcade.color.BLUE]
 #controls
 left_pressed = False
 right_pressed = False
-movement = 20
+movement = 40
 
-# Health = [heart1, heart2, heart3]
-heart1_x = 50
-heart1_y = 50
+#Health
+heart1_x = 0
+heart1_y = 1
+heart1 = [50, 50]
 
-heart2_x = 110
-heart2_y = 50
+heart2_x = 0
+heart2_y = 1
+heart2 = [110, 50]
 
-heart3_x = 170
-heart3_y = 50
+heart3_x = 0
+heart3_y = 1
+heart3 = [170, 50]
+
+hearts_x = [heart1_x, heart2_x, heart3_x]
+hearts_y = [heart1_y, heart2_y, heart3_y]
+Health = [heart1, heart2, heart3]
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -154,7 +159,7 @@ def on_draw():
         for x, y in zip(asteroid3_x_positions, asteroid3_y_positions):
             draw_asteroid3(x, y)
 #Hearts
-        draw_hearts(x, y)
+        draw_hearts(hearts_x, hearts_y)
     elif current_screen == "instructions":
         draw_instructions()
     elif current_screen == "menu":
@@ -196,7 +201,7 @@ def on_mouse_press(x, y, button, modifiers):
 
 # Screen Functions
 def draw_menu():
-    arcade.draw_texture_rectangle(100, 200, tile_img.width, tile_img.height, tile_img)
+    arcade.set_background_color(arcade.color.WHITE_SMOKE)
     arcade.draw_text("Main Menu", WIDTH/2, HEIGHT/2,
                      arcade.color.BLACK, font_size=30, anchor_x="center")
     arcade.draw_text("I for Instructions", WIDTH/2, HEIGHT/2-90,
@@ -229,11 +234,13 @@ def draw_asteroid3(x, y):
 
 def draw_ship(x, y):
     arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
+    arcade.draw_rectangle_filled(x, y, 100, 40, arcade.color.BLUE)
+    arcade.draw_rectangle_filled(x, y+20, 40, 100, arcade.color.BLUE)
 
-def draw_hearts(x, y):
-    arcade.draw_circle_filled(heart1_x, heart1_y, 25, arcade.color.RED)
-    arcade.draw_circle_filled(heart2_x, heart2_y, 25, arcade.color.RED)
-    arcade.draw_circle_filled(heart3_x, heart3_y, 25, arcade.color.RED)
+def draw_hearts(hearts_x, hearts_y):
+    arcade.draw_circle_filled(heart1[heart1_x], heart1[heart1_y], 25, arcade.color.RED)
+    arcade.draw_circle_filled(heart2[heart2_x], heart2[heart2_y], 25, arcade.color.RED)
+    arcade.draw_circle_filled(heart3[heart3_x], heart3[heart3_y], 25, arcade.color.RED)
 
 if __name__ == '__main__':
     setup()

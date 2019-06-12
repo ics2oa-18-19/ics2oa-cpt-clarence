@@ -69,6 +69,12 @@ hearts_x = [heart1_x, heart2_x, heart3_x]
 hearts_y = [heart1_y, heart2_y, heart3_y]
 Health = [heart1, heart2, heart3]
 
+bullet_x = ship_x_position
+bullet_y = ship_y_position
+bullet_speed = 40
+shooting_pressed = False
+bullet_color = arcade.color.ORANGE
+
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
     arcade.set_background_color(arcade.color.BLACK)
@@ -84,11 +90,10 @@ def setup():
     arcade.run()
 
 def update(delta_time):
-
-# ship
     global left_pressed, right_pressed, ship_x_position, large_asteroid, Medium_asteroid, \
-        Small_asteroid, current_screen, ship
+        Small_asteroid, current_screen, ship, bullet_x, bullet_y, bullet_speed
     if current_screen == "play":
+# ship
         if left_pressed:
             ship[0] -= movement
         elif right_pressed:
@@ -97,6 +102,8 @@ def update(delta_time):
             ship[0] = WIDTH - 50
         elif ship[0] < 50:
             ship[0] = 50
+        if shooting_pressed == True:
+            bullet_y += bullet_speed
 
 # Asteroids
         for index in range(1):
@@ -125,16 +132,16 @@ def update(delta_time):
         if dist < large_asteroid[2] + ship[2]:
             current_screen = "gameover"
 
-        a = Medium_asteroid[0] - ship[0]
-        b = Medium_asteroid[1] - ship[1]
-        dist = math.sqrt(a ** 2 + b ** 2)
+        c = Medium_asteroid[0] - ship[0]
+        d = Medium_asteroid[1] - ship[1]
+        dist = math.sqrt(c ** 2 + d ** 2)
 
         if dist < Medium_asteroid[2] + ship[2]:
             current_screen = "gameover"
 
-        a = Small_asteroid[0] - ship[0]
-        b = Small_asteroid[1] - ship[1]
-        dist = math.sqrt(a ** 2 + b ** 2)
+        e = Small_asteroid[0] - ship[0]
+        f = Small_asteroid[1] - ship[1]
+        dist = math.sqrt(e ** 2 + f ** 2)
 
         if dist < Small_asteroid[2] + ship[2]:
             current_screen = "gameover"
@@ -145,8 +152,7 @@ def on_draw():
     if current_screen == "play":
         arcade.set_background_color(arcade.color.BLACK)
 #Ship
-        draw_ship(ship_x_position, ship_y_position)
-
+        draw_bullet(bullet_x, bullet_y)
 # asteroids
         for x, y in zip(asteroid1_x_positions, asteroid1_y_positions):
             draw_asteroid1(x, y)
@@ -156,6 +162,9 @@ def on_draw():
 
         for x, y in zip(asteroid3_x_positions, asteroid3_y_positions):
             draw_asteroid3(x, y)
+
+        draw_ship(ship_x_position, ship_y_position)
+
 #Hearts
         draw_hearts(hearts_x, hearts_y)
     elif current_screen == "instructions":
@@ -166,16 +175,18 @@ def on_draw():
         draw_gameover()
 
 def on_key_press(key, modifiers):
-    global left_pressed, right_pressed, current_screen
+    global left_pressed, right_pressed, current_screen, shooting_pressed
     if current_screen == "play":
         if key == arcade.key.A:
-                left_pressed = True
-
+            left_pressed = True
         elif key == arcade.key.D:
-                right_pressed = True
+            right_pressed = True
+
+        elif key == arcade.key.SPACE:
+            shooting_pressed = True
 
 def on_key_release(key, modifiers):
-    global left_pressed, right_pressed, current_screen
+    global left_pressed, right_pressed, current_screen, shooting_pressed
     if current_screen == "menu":
         if key == arcade.key.I:
             current_screen = "instructions"
@@ -219,7 +230,6 @@ def draw_gameover():
     arcade.draw_text("Game Over", WIDTH/2, HEIGHT/2,
                      arcade.color.BLACK, font_size=30, anchor_x="center")
 
-
 # Play Functions
 def draw_asteroid1(x, y):
     arcade.draw_circle_filled(x, y, 125, arcade.color.BROWN_NOSE)
@@ -234,6 +244,10 @@ def draw_ship(x, y):
     arcade.draw_circle_filled(ship[0], ship[1], ship[2], ship[3])
     arcade.draw_rectangle_filled(ship[0], ship[1], 100, 40, arcade.color.BLUE)
     arcade.draw_rectangle_filled(ship[0], ship[1]+20, 40, 100, arcade.color.BLUE)
+
+def draw_bullet(x, y):
+    if shooting_pressed == True:
+        arcade.draw_rectangle_filled(bullet_x, bullet_y, 20, 30, bullet_color)
 
 def draw_hearts(hearts_x, hearts_y):
     arcade.draw_circle_filled(heart1[heart1_x], heart1[heart1_y], 25, arcade.color.RED)

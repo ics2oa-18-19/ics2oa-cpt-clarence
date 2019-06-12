@@ -26,21 +26,21 @@ for _ in range(1):
     y = random.randrange(HEIGHT, HEIGHT*2)
     asteroid1_x_positions.append(x)
     asteroid1_y_positions.append(y)
-    large_asteroid = [x, y, 125, arcade.color.BROWN_NOSE]
+large_asteroid = [x, y, 125, arcade.color.BROWN_NOSE]
 
 for _ in range(2):
     x = random.randrange(0, WIDTH)
     y = random.randrange(HEIGHT, HEIGHT * 2)
     asteroid2_x_positions.append(x)
     asteroid2_y_positions.append(y)
-    Medium_asteroid = [x, y, 75, arcade.color.LIGHT_BROWN]
+Medium_asteroid = [x, y, 75, arcade.color.LIGHT_BROWN]
 
 for _ in range(4):
     x = random.randrange(0, WIDTH)
     y = random.randrange(HEIGHT, HEIGHT * 2)
     asteroid3_x_positions.append(x)
     asteroid3_y_positions.append(y)
-    Small_asteroid = [x, y, 40, arcade.color.COCOA_BROWN]
+Small_asteroid = [x, y, 40, arcade.color.COCOA_BROWN]
 
 # Ship
 ship_x_position = WIDTH/2
@@ -86,60 +86,58 @@ def setup():
 def update(delta_time):
 
 # ship
-    global left_pressed, right_pressed, ship_x_position, large_asteroid, Medium_asteroid, Small_asteroid, current_screen, ship
+    global left_pressed, right_pressed, ship_x_position, large_asteroid, Medium_asteroid, \
+        Small_asteroid, current_screen, ship
     if current_screen == "play":
         if left_pressed:
-            ship_x_position -= movement
-
+            ship[0] -= movement
         elif right_pressed:
-            ship_x_position += movement
-
-        if ship_x_position > WIDTH - 50:
-            ship_x_position = WIDTH - 50
-
-        elif ship_x_position < 50:
-            ship_x_position = 50
+            ship[0] += movement
+        if ship[0] > WIDTH - 50:
+            ship[0] = WIDTH - 50
+        elif ship[0] < 50:
+            ship[0] = 50
 
 # Asteroids
-    for index in range(1):
-        asteroid1_y_positions[index] -= 1
-        if asteroid1_y_positions[index] < -175:
-            asteroid1_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
-            asteroid1_x_positions[index] = random.randrange(200, 1000)
+        for index in range(1):
+            asteroid1_y_positions[index] -= 1
+            if asteroid1_y_positions[index] < -175:
+                asteroid1_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
+                asteroid1_x_positions[index] = random.randrange(200, 1000)
 
-    for index in range(2):
-        asteroid2_y_positions[index] -= 3
-        if asteroid2_y_positions[index] < -175:
-            asteroid2_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
-            asteroid2_x_positions[index] = random.randrange(200, 1000)
+        for index in range(2):
+            asteroid2_y_positions[index] -= 3
+            if asteroid2_y_positions[index] < -175:
+                asteroid2_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
+                asteroid2_x_positions[index] = random.randrange(200, 1000)
 
-    for index in range(4):
-        asteroid3_y_positions[index] -= 5
-        if asteroid3_y_positions[index] < -175:
-            asteroid3_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
-            asteroid3_x_positions[index] = random.randrange(200, 1000)
+        for index in range(4):
+            asteroid3_y_positions[index] -= 5
+            if asteroid3_y_positions[index] < -175:
+                asteroid3_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
+                asteroid3_x_positions[index] = random.randrange(200, 1000)
 
 # Collision
-    a = large_asteroid[0] - ship[0]
-    b = large_asteroid[1] - ship[1]
-    dist = math.sqrt(a ** 2 + b ** 2)
+        a = large_asteroid[0] - ship[0]
+        b = large_asteroid[1] - ship[1]
+        dist = math.sqrt(a ** 2 + b ** 2)
 
-    if dist < large_asteroid[2] + ship[2]:
-        current_screen = "gameover"
+        if dist < large_asteroid[2] + ship[2]:
+            current_screen = "gameover"
 
-    a = Medium_asteroid[0] - ship[0]
-    b = Medium_asteroid[1] - ship[1]
-    dist = math.sqrt(a ** 2 + b ** 2)
+        a = Medium_asteroid[0] - ship[0]
+        b = Medium_asteroid[1] - ship[1]
+        dist = math.sqrt(a ** 2 + b ** 2)
 
-    if dist < Medium_asteroid[2] + ship[2]:
-        current_screen = "gameover"
+        if dist < Medium_asteroid[2] + ship[2]:
+            current_screen = "gameover"
 
-    a = Small_asteroid[0] - ship[0]
-    b = Small_asteroid[1] - ship[1]
-    dist = math.sqrt(a ** 2 + b ** 2)
+        a = Small_asteroid[0] - ship[0]
+        b = Small_asteroid[1] - ship[1]
+        dist = math.sqrt(a ** 2 + b ** 2)
 
-    if dist < Small_asteroid[2] + ship[2]:
-        current_screen = "gameover"
+        if dist < Small_asteroid[2] + ship[2]:
+            current_screen = "gameover"
 
 def on_draw():
     arcade.start_render()
@@ -233,9 +231,9 @@ def draw_asteroid3(x, y):
     arcade.draw_circle_filled(x, y, 40, arcade.color.COCOA_BROWN)
 
 def draw_ship(x, y):
-    arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
-    arcade.draw_rectangle_filled(x, y, 100, 40, arcade.color.BLUE)
-    arcade.draw_rectangle_filled(x, y+20, 40, 100, arcade.color.BLUE)
+    arcade.draw_circle_filled(ship[0], ship[1], ship[2], ship[3])
+    arcade.draw_rectangle_filled(ship[0], ship[1], 100, 40, arcade.color.BLUE)
+    arcade.draw_rectangle_filled(ship[0], ship[1]+20, 40, 100, arcade.color.BLUE)
 
 def draw_hearts(hearts_x, hearts_y):
     arcade.draw_circle_filled(heart1[heart1_x], heart1[heart1_y], 25, arcade.color.RED)

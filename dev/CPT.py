@@ -3,9 +3,6 @@ import random
 import arcade
 import os
 
-file_path = os.path.dirname(os.path.abspath(__file__))
-os.chdir(file_path)
-
 # Screen
 WIDTH = 1300
 HEIGHT = 740
@@ -26,21 +23,21 @@ for _ in range(1):
     y = random.randrange(HEIGHT, HEIGHT*2)
     asteroid1_x_positions.append(x)
     asteroid1_y_positions.append(y)
-large_asteroid = [x, y, 125, arcade.color.BROWN_NOSE]
+    large_asteroid = [x, y, 125, arcade.color.BROWN_NOSE]
 
 for _ in range(2):
     x = random.randrange(0, WIDTH)
     y = random.randrange(HEIGHT, HEIGHT * 2)
     asteroid2_x_positions.append(x)
     asteroid2_y_positions.append(y)
-Medium_asteroid = [x, y, 75, arcade.color.LIGHT_BROWN]
+    medium_asteroid = [x, y, 75, arcade.color.LIGHT_BROWN]
 
 for _ in range(4):
     x = random.randrange(0, WIDTH)
     y = random.randrange(HEIGHT, HEIGHT * 2)
     asteroid3_x_positions.append(x)
     asteroid3_y_positions.append(y)
-Small_asteroid = [x, y, 40, arcade.color.COCOA_BROWN]
+    small_asteroid = [x, y, 40, arcade.color.COCOA_BROWN]
 
 # Ship
 ship_x_position = WIDTH/2
@@ -67,13 +64,7 @@ heart3 = [170, 50]
 
 hearts_x = [heart1_x, heart2_x, heart3_x]
 hearts_y = [heart1_y, heart2_y, heart3_y]
-Health = [heart1, heart2, heart3]
-
-bullet_x = ship_x_position
-bullet_y = ship_y_position
-bullet_speed = 40
-shooting_pressed = False
-bullet_color = arcade.color.ORANGE
+health = 3
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -90,22 +81,21 @@ def setup():
     arcade.run()
 
 def update(delta_time):
-    global left_pressed, right_pressed, ship_x_position, large_asteroid, Medium_asteroid, \
-        Small_asteroid, current_screen, ship, bullet_x, bullet_y, bullet_speed
-    if current_screen == "play":
-# ship
-        if left_pressed:
-            ship[0] -= movement
-        elif right_pressed:
-            ship[0] += movement
-        if ship[0] > WIDTH - 50:
-            ship[0] = WIDTH - 50
-        elif ship[0] < 50:
-            ship[0] = 50
-        if shooting_pressed == True:
-            bullet_y += bullet_speed
 
-# Asteroids
+# ship
+    global left_pressed, right_pressed, ship_x_position, large_asteroid, Medium_asteroid, \
+        Small_asteroid, current_screen, ship, health
+    if current_screen == "play":
+        if left_pressed:
+            ship_x_position -= movement
+        elif right_pressed:
+            ship_x_position += movement
+        if ship_x_position > WIDTH - 50:
+            ship_x_position = WIDTH - 50
+        elif ship_x_position < 50:
+            ship_x_position = 50
+
+    # Asteroids
         for index in range(1):
             asteroid1_y_positions[index] -= 1
             if asteroid1_y_positions[index] < -175:
@@ -124,27 +114,27 @@ def update(delta_time):
                 asteroid3_y_positions[index] = random.randrange(HEIGHT, HEIGHT + 300)
                 asteroid3_x_positions[index] = random.randrange(200, 1000)
 
-# Collision
+    # Collision
         a = large_asteroid[0] - ship[0]
         b = large_asteroid[1] - ship[1]
         dist = math.sqrt(a ** 2 + b ** 2)
-
         if dist < large_asteroid[2] + ship[2]:
-            current_screen = "gameover"
+            health -= 3
 
-        c = Medium_asteroid[0] - ship[0]
-        d = Medium_asteroid[1] - ship[1]
-        dist = math.sqrt(c ** 2 + d ** 2)
+        a = medium_asteroid[0] - ship[0]
+        b = medium_asteroid[1] - ship[1]
+        dist = math.sqrt(a ** 2 + b ** 2)
+        if dist < medium_asteroid[2] + ship[2]:
+            health -= 2
 
-        if dist < Medium_asteroid[2] + ship[2]:
-            current_screen = "gameover"
+        a = small_asteroid[0] - ship[0]
+        b = small_asteroid[1] - ship[1]
+        dist = math.sqrt(a ** 2 + b ** 2)
+        if dist < small_asteroid[2] + ship[2]:
+            health -= 1
 
-        e = Small_asteroid[0] - ship[0]
-        f = Small_asteroid[1] - ship[1]
-        dist = math.sqrt(e ** 2 + f ** 2)
-
-        if dist < Small_asteroid[2] + ship[2]:
-            current_screen = "gameover"
+        if health == 0:
+            draw_gameover()
 
 def on_draw():
     arcade.start_render()
@@ -152,7 +142,8 @@ def on_draw():
     if current_screen == "play":
         arcade.set_background_color(arcade.color.BLACK)
 #Ship
-        draw_bullet(bullet_x, bullet_y)
+        draw_ship(ship_x_position, ship_y_position)
+
 # asteroids
         for x, y in zip(asteroid1_x_positions, asteroid1_y_positions):
             draw_asteroid1(x, y)
@@ -162,9 +153,6 @@ def on_draw():
 
         for x, y in zip(asteroid3_x_positions, asteroid3_y_positions):
             draw_asteroid3(x, y)
-
-        draw_ship(ship_x_position, ship_y_position)
-
 #Hearts
         draw_hearts(hearts_x, hearts_y)
     elif current_screen == "instructions":
@@ -175,18 +163,16 @@ def on_draw():
         draw_gameover()
 
 def on_key_press(key, modifiers):
-    global left_pressed, right_pressed, current_screen, shooting_pressed
+    global left_pressed, right_pressed, current_screen
     if current_screen == "play":
         if key == arcade.key.A:
-            left_pressed = True
-        elif key == arcade.key.D:
-            right_pressed = True
+                left_pressed = True
 
-        elif key == arcade.key.SPACE:
-            shooting_pressed = True
+        elif key == arcade.key.D:
+                right_pressed = True
 
 def on_key_release(key, modifiers):
-    global left_pressed, right_pressed, current_screen, shooting_pressed
+    global left_pressed, right_pressed, current_screen
     if current_screen == "menu":
         if key == arcade.key.I:
             current_screen = "instructions"
@@ -230,6 +216,7 @@ def draw_gameover():
     arcade.draw_text("Game Over", WIDTH/2, HEIGHT/2,
                      arcade.color.BLACK, font_size=30, anchor_x="center")
 
+
 # Play Functions
 def draw_asteroid1(x, y):
     arcade.draw_circle_filled(x, y, 125, arcade.color.BROWN_NOSE)
@@ -241,13 +228,9 @@ def draw_asteroid3(x, y):
     arcade.draw_circle_filled(x, y, 40, arcade.color.COCOA_BROWN)
 
 def draw_ship(x, y):
-    arcade.draw_circle_filled(ship[0], ship[1], ship[2], ship[3])
-    arcade.draw_rectangle_filled(ship[0], ship[1], 100, 40, arcade.color.BLUE)
-    arcade.draw_rectangle_filled(ship[0], ship[1]+20, 40, 100, arcade.color.BLUE)
-
-def draw_bullet(x, y):
-    if shooting_pressed == True:
-        arcade.draw_rectangle_filled(bullet_x, bullet_y, 20, 30, bullet_color)
+    arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
+    arcade.draw_rectangle_filled(x, y, 100, 40, arcade.color.BLUE)
+    arcade.draw_rectangle_filled(x, y+20, 40, 100, arcade.color.BLUE)
 
 def draw_hearts(hearts_x, hearts_y):
     arcade.draw_circle_filled(heart1[heart1_x], heart1[heart1_y], 25, arcade.color.RED)

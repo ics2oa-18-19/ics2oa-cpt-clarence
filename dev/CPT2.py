@@ -23,7 +23,8 @@ button_play = [WIDTH/2 - 150, HEIGHT/2, 300, 50, False, arcade.color.BLUE,
                        arcade.color.GREEN, arcade.color.BLACK]
 button_back_menu = [WIDTH/2 - 150, HEIGHT/2 - 100, 300, 50, False, arcade.color.RED,
                        arcade.color.GREEN, arcade.color.BLACK]
-
+button_exit = [20, HEIGHT-60, 100, 50, False, arcade.color.RED,
+                       arcade.color.GREEN, arcade.color.BLACK]
 #Ship
 ship_x_position = 0
 ship_y_position = 1
@@ -103,6 +104,11 @@ def on_mouse_press(x, y, button, modifiers):
             button_back_menu[BTN_IS_CLICKED] = True
             current_screen = "menu"
 
+    elif current_screen == "play":
+        if (x > button_exit[BTN_X] and x < button_exit[BTN_X] + button_exit[BTN_WIDTH] and
+                y > button_exit[BTN_Y] and y < button_exit[BTN_Y] + button_exit[BTN_HEIGHT]):
+            button_exit[BTN_IS_CLICKED] = True
+            current_screen = "menu"
 
 def on_mouse_release(x, y, button, modifiers):
     global current_screen
@@ -111,6 +117,9 @@ def on_mouse_release(x, y, button, modifiers):
         button_play[BTN_IS_CLICKED] = False
     elif current_screen == "instructions":
         button_back_menu[BTN_IS_CLICKED] = False
+    elif current_screen == "play":
+        button_exit[BTN_IS_CLICKED] = False
+
 
 def draw_menu():
     arcade.set_background_color(arcade.color.ORANGE)
@@ -179,8 +188,22 @@ def draw_instructions():
 
 def draw_play():
     arcade.set_background_color(arcade.color.BLACK)
-
-
+    if button_exit[BTN_IS_CLICKED]:
+        color3 = button_exit[BTN_CLICKED_COLOR]
+    else:
+        color3 = button_exit[BTN_COLOR]
+    arcade.draw_xywh_rectangle_filled(button_exit[BTN_X]-1,
+                                      button_exit[BTN_Y]-1,
+                                      button_exit[BTN_WIDTH]+3,
+                                      button_exit[BTN_HEIGHT]+3,
+                                      button_exit[BTN_OUTLINE_COLOR])
+    arcade.draw_xywh_rectangle_filled(button_exit[BTN_X],
+                                      button_exit[BTN_Y],
+                                      button_exit[BTN_WIDTH],
+                                      button_exit[BTN_HEIGHT],
+                                      color3)
+    arcade.draw_text("EXIT", button_exit[BTN_X]+30,
+                 button_exit[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
 
 if __name__ == '__main__':
     setup()

@@ -25,6 +25,16 @@ button_back_menu = [WIDTH/2 - 150, HEIGHT/2 - 100, 300, 50, False, arcade.color.
                        arcade.color.GREEN, arcade.color.BLACK]
 
 #Ship
+ship_x_position = 0
+ship_y_position = 1
+ship_speed = 2
+ship_color = 3
+ship = [WIDTH/2, 75, 30, arcade.color.BLUE]
+
+#Controls
+left_pressed = False
+right_pressed = False
+movement = 40
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -43,7 +53,16 @@ def setup():
 
 
 def update(delta_time):
-    pass
+    global left_pressed, right_pressed, ship_x_position, current_screen, ship
+    if current_screen == "play":
+        if left_pressed:
+            ship_x_position -= movement
+        elif right_pressed:
+            ship_x_position += movement
+        if ship_x_position > WIDTH - 50:
+            ship_x_position = WIDTH - 50
+        elif ship_x_position < 50:
+            ship_x_position = 50
 
 def on_draw():
     arcade.start_render()
@@ -51,6 +70,8 @@ def on_draw():
         draw_menu()
     elif current_screen == "instructions":
         draw_instructions()
+    elif current_screen == "play":
+        draw_play()
 
 def on_key_press(key, modifiers):
     pass
@@ -67,6 +88,10 @@ def on_mouse_press(x, y, button, modifiers):
                 y > button_instructions[BTN_Y] and y < button_instructions[BTN_Y] + button_instructions[BTN_HEIGHT]):
             button_instructions[BTN_IS_CLICKED] = True
             current_screen = "instructions"
+        elif (x > button_play[BTN_X] and x < button_play[BTN_X] + button_play[BTN_WIDTH] and
+                y > button_play[BTN_Y] and y < button_play[BTN_Y] + button_play[BTN_HEIGHT]):
+            button_play[BTN_IS_CLICKED] = True
+            current_screen = "play"
 
         if (x > button_play[BTN_X] and x < button_play[BTN_X] + button_play[BTN_WIDTH] and
                 y > button_play[BTN_Y] and y < button_play[BTN_Y] + button_play[BTN_HEIGHT]):
@@ -77,6 +102,7 @@ def on_mouse_press(x, y, button, modifiers):
                 y > button_back_menu[BTN_Y] and y < button_back_menu[BTN_Y] + button_back_menu[BTN_HEIGHT]):
             button_back_menu[BTN_IS_CLICKED] = True
             current_screen = "menu"
+
 
 def on_mouse_release(x, y, button, modifiers):
     global current_screen
@@ -150,6 +176,11 @@ def draw_instructions():
 
     arcade.draw_text("Go Back", button_back_menu[BTN_X] + 100,
                  button_back_menu[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
+
+def draw_play():
+    arcade.set_background_color(arcade.color.BLACK)
+
+
 
 if __name__ == '__main__':
     setup()

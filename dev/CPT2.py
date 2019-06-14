@@ -23,8 +23,12 @@ button_play = [WIDTH/2 - 150, HEIGHT/2, 300, 50, False, arcade.color.BLUE,
                        arcade.color.GREEN, arcade.color.BLACK]
 button_back_menu = [WIDTH/2 - 150, HEIGHT/2 - 100, 300, 50, False, arcade.color.RED,
                        arcade.color.GREEN, arcade.color.BLACK]
-button_exit = [20, HEIGHT-60, 50, 50, False, arcade.color.RED,
-                       arcade.color.GREEN, arcade.color.BLACK]
+button_pause = [20, HEIGHT-60, 50, 50, False, arcade.color.RED,
+                       arcade.color.GREEN, arcade.color.ASH_GREY]
+button_exit = [WIDTH/2 - 150, HEIGHT/2 - 100, 300, 50, False, arcade.color.RED,
+                       arcade.color.GREEN, arcade.color.ASH_GREY]
+button_resume = [WIDTH/2 - 150, HEIGHT/2, 300, 50, False, arcade.color.BLUE,
+                       arcade.color.GREEN, arcade.color.ASH_GREY]
 #Ship
 ship_x_position = 0
 ship_y_position = 1
@@ -74,6 +78,9 @@ def on_draw():
     elif current_screen == "play":
         draw_play()
         draw_ship(ship_x_position, ship_y_position)
+    elif current_screen == "pause":
+        draw_pause()
+        draw_ship(ship_x_position, ship_y_position)
 
 def on_key_press(key, modifiers):
     global left_pressed, right_pressed, current_screen
@@ -91,7 +98,6 @@ def on_key_release(key, modifiers):
             left_pressed = False
         elif key == arcade.key.D:
             right_pressed = False
-
 
 
 def on_mouse_press(x, y, button, modifiers):
@@ -117,10 +123,20 @@ def on_mouse_press(x, y, button, modifiers):
             current_screen = "menu"
 
     elif current_screen == "play":
+        if (x > button_pause[BTN_X] and x < button_pause[BTN_X] + button_pause[BTN_WIDTH] and
+                y > button_pause[BTN_Y] and y < button_pause[BTN_Y] + button_pause[BTN_HEIGHT]):
+            button_pause[BTN_IS_CLICKED] = True
+            current_screen = "pause"
+
+    elif current_screen == "pause":
         if (x > button_exit[BTN_X] and x < button_exit[BTN_X] + button_exit[BTN_WIDTH] and
                 y > button_exit[BTN_Y] and y < button_exit[BTN_Y] + button_exit[BTN_HEIGHT]):
             button_exit[BTN_IS_CLICKED] = True
             current_screen = "menu"
+        elif (x > button_resume[BTN_X] and x < button_resume[BTN_X] + button_resume[BTN_WIDTH] and
+                y > button_resume[BTN_Y] and y < button_resume[BTN_Y] + button_resume[BTN_HEIGHT]):
+            button_resume[BTN_IS_CLICKED] = True
+            current_screen = "play"
 
 def on_mouse_release(x, y, button, modifiers):
     global current_screen
@@ -130,8 +146,10 @@ def on_mouse_release(x, y, button, modifiers):
     elif current_screen == "instructions":
         button_back_menu[BTN_IS_CLICKED] = False
     elif current_screen == "play":
+        button_pause[BTN_IS_CLICKED] = False
+    elif current_screen == "pause":
         button_exit[BTN_IS_CLICKED] = False
-
+        button_resume[BTN_IS_CLICKED] = False
 
 def draw_menu():
     arcade.set_background_color(arcade.color.ORANGE)
@@ -200,10 +218,41 @@ def draw_instructions():
 
 def draw_play():
     arcade.set_background_color(arcade.color.BLACK)
+    if button_pause[BTN_IS_CLICKED]:
+        color3 = button_pause[BTN_CLICKED_COLOR]
+    else:
+        color3 = button_pause[BTN_COLOR]
+    arcade.draw_xywh_rectangle_filled(button_pause[BTN_X]-1,
+                                      button_pause[BTN_Y]-1,
+                                      button_pause[BTN_WIDTH]+3,
+                                      button_pause[BTN_HEIGHT]+3,
+                                      button_pause[BTN_OUTLINE_COLOR])
+    arcade.draw_xywh_rectangle_filled(button_pause[BTN_X],
+                                      button_pause[BTN_Y],
+                                      button_pause[BTN_WIDTH],
+                                      button_pause[BTN_HEIGHT],
+                                      color3)
+    arcade.draw_text("=", button_pause[BTN_X]+12,
+                 button_pause[BTN_Y] + 7, arcade.color.WHITE, font_size=40)
+
+def draw_pause():
+    arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
+    arcade.draw_text("Menu", WIDTH / 2, HEIGHT - 200,
+                     arcade.color.ASH_GREY, font_size=100, anchor_x="center")
     if button_exit[BTN_IS_CLICKED]:
         color3 = button_exit[BTN_CLICKED_COLOR]
     else:
         color3 = button_exit[BTN_COLOR]
+    arcade.draw_xywh_rectangle_filled(WIDTH/2-255,
+                                      HEIGHT/2-180,
+                                      505,
+                                      305,
+                                      arcade.color.ASH_GREY)
+    arcade.draw_xywh_rectangle_filled(WIDTH/2-255,
+                                      HEIGHT/2-180,
+                                      500,
+                                      300,
+                                      arcade.color.YELLOW)
     arcade.draw_xywh_rectangle_filled(button_exit[BTN_X]-1,
                                       button_exit[BTN_Y]-1,
                                       button_exit[BTN_WIDTH]+3,
@@ -214,10 +263,25 @@ def draw_play():
                                       button_exit[BTN_WIDTH],
                                       button_exit[BTN_HEIGHT],
                                       color3)
-    arcade.draw_text("=", button_exit[BTN_X]+15,
+    arcade.draw_text("Exit To Main Menu", button_exit[BTN_X] + 60,
                  button_exit[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
+#Resume Button
+    arcade.draw_xywh_rectangle_filled(button_resume[BTN_X]-1,
+                                      button_resume[BTN_Y]-1,
+                                      button_resume[BTN_WIDTH]+3,
+                                      button_resume[BTN_HEIGHT]+3,
+                                      button_resume[BTN_OUTLINE_COLOR])
+    arcade.draw_xywh_rectangle_filled(button_resume[BTN_X],
+                                      button_resume[BTN_Y],
+                                      button_resume[BTN_WIDTH],
+                                      button_resume[BTN_HEIGHT],
+                                      button_resume[BTN_COLOR])
+    arcade.draw_text("Resume", button_resume[BTN_X] + 100,
+                 button_resume[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
+
 
 def draw_ship(x, y):
+    arcade.set_background_color(arcade.color.BLACK)
     arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
     arcade.draw_rectangle_filled(x, y, 100, 40, arcade.color.BLUE)
     arcade.draw_rectangle_filled(x, y+20, 40, 100, arcade.color.BLUE)

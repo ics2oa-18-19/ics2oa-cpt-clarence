@@ -23,7 +23,7 @@ button_play = [WIDTH/2 - 150, HEIGHT/2, 300, 50, False, arcade.color.BLUE,
                        arcade.color.GREEN, arcade.color.BLACK]
 button_back_menu = [WIDTH/2 - 150, HEIGHT/2 - 100, 300, 50, False, arcade.color.RED,
                        arcade.color.GREEN, arcade.color.BLACK]
-button_exit = [20, HEIGHT-60, 100, 50, False, arcade.color.RED,
+button_exit = [20, HEIGHT-60, 50, 50, False, arcade.color.RED,
                        arcade.color.GREEN, arcade.color.BLACK]
 #Ship
 ship_x_position = 0
@@ -35,7 +35,7 @@ ship = [WIDTH/2, 75, 30, arcade.color.BLUE]
 #Controls
 left_pressed = False
 right_pressed = False
-movement = 40
+movement = 20
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -73,13 +73,25 @@ def on_draw():
         draw_instructions()
     elif current_screen == "play":
         draw_play()
+        draw_ship(ship_x_position, ship_y_position)
 
 def on_key_press(key, modifiers):
-    pass
+    global left_pressed, right_pressed, current_screen
+    if current_screen == "play":
+        if key == arcade.key.A:
+                left_pressed = True
+        elif key == arcade.key.D:
+                right_pressed = True
 
 
 def on_key_release(key, modifiers):
-    pass
+    global left_pressed, right_pressed, current_screen
+    if current_screen == "play":
+        if key == arcade.key.A:
+            left_pressed = False
+        elif key == arcade.key.D:
+            right_pressed = False
+
 
 
 def on_mouse_press(x, y, button, modifiers):
@@ -202,8 +214,13 @@ def draw_play():
                                       button_exit[BTN_WIDTH],
                                       button_exit[BTN_HEIGHT],
                                       color3)
-    arcade.draw_text("EXIT", button_exit[BTN_X]+30,
+    arcade.draw_text("=", button_exit[BTN_X]+15,
                  button_exit[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
+
+def draw_ship(x, y):
+    arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
+    arcade.draw_rectangle_filled(x, y, 100, 40, arcade.color.BLUE)
+    arcade.draw_rectangle_filled(x, y+20, 40, 100, arcade.color.BLUE)
 
 if __name__ == '__main__':
     setup()

@@ -32,14 +32,17 @@ button_resume = [WIDTH/2 - 150, HEIGHT/2, 300, 50, False, arcade.color.BLUE,
 #Ship
 ship_x_position = 0
 ship_y_position = 1
-ship_speed = 2
-ship_color = 3
-ship = [WIDTH/2, 75, 30, arcade.color.BLUE]
+ship = [WIDTH/2, 75]
 
 #Controls
 left_pressed = False
 right_pressed = False
 movement = 20
+
+#Hitboxes
+HIT_BOX_X = 0
+HIT_BOX_Y = 1
+ship_hitbox = [ship[ship_x_position]-50, ship[ship_y_position]-30, 100, 100, False, arcade.color.RED]
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -61,13 +64,18 @@ def update(delta_time):
     global left_pressed, right_pressed, ship_x_position, current_screen, ship
     if current_screen == "play":
         if left_pressed:
-            ship_x_position -= movement
+            ship[ship_x_position] -= movement
+            ship_hitbox[HIT_BOX_X] -= movement
         elif right_pressed:
-            ship_x_position += movement
-        if ship_x_position > WIDTH - 50:
-            ship_x_position = WIDTH - 50
-        elif ship_x_position < 50:
-            ship_x_position = 50
+            ship[ship_x_position] += movement
+            ship_hitbox[HIT_BOX_X] += movement
+        if ship[ship_x_position] > WIDTH - 50:
+            ship[ship_x_position] = WIDTH - 50
+            ship_hitbox[HIT_BOX_X] = WIDTH - 50
+        elif ship[ship_x_position] < 50:
+            ship[ship_x_position] = 50
+            ship_hitbox[HIT_BOX_X] = 50
+
 
 def on_draw():
     arcade.start_render()
@@ -78,6 +86,7 @@ def on_draw():
     elif current_screen == "play":
         draw_play()
         draw_ship(ship_x_position, ship_y_position)
+        draw_ship_hitbox(ship_hitbox[HIT_BOX_X], ship_hitbox[HIT_BOX_Y])
     elif current_screen == "pause":
         draw_pause()
         draw_ship(ship_x_position, ship_y_position)
@@ -106,6 +115,7 @@ def on_mouse_press(x, y, button, modifiers):
         if (x > button_instructions[BTN_X] and x < button_instructions[BTN_X] + button_instructions[BTN_WIDTH] and
                 y > button_instructions[BTN_Y] and y < button_instructions[BTN_Y] + button_instructions[BTN_HEIGHT]):
             button_instructions[BTN_IS_CLICKED] = True
+
             current_screen = "instructions"
         elif (x > button_play[BTN_X] and x < button_play[BTN_X] + button_play[BTN_WIDTH] and
                 y > button_play[BTN_Y] and y < button_play[BTN_Y] + button_play[BTN_HEIGHT]):
@@ -236,7 +246,7 @@ def draw_play():
                  button_pause[BTN_Y] + 7, arcade.color.WHITE, font_size=40)
 
 def draw_pause():
-    arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
+    arcade.draw_circle_filled(ship[ship_x_position], ship[ship_y_position], 50, arcade.color.BLUE)
     arcade.draw_text("Menu", WIDTH / 2, HEIGHT - 200,
                      arcade.color.ASH_GREY, font_size=100, anchor_x="center")
     if button_exit[BTN_IS_CLICKED]:
@@ -282,9 +292,13 @@ def draw_pause():
 
 def draw_ship(x, y):
     arcade.set_background_color(arcade.color.BLACK)
-    arcade.draw_circle_filled(ship_x_position, ship_y_position, 50, arcade.color.BLUE)
-    arcade.draw_rectangle_filled(x, y, 100, 40, arcade.color.BLUE)
-    arcade.draw_rectangle_filled(x, y+20, 40, 100, arcade.color.BLUE)
+    arcade.draw_circle_filled(ship[ship_x_position], ship[ship_y_position], 50, arcade.color.BATTLESHIP_GREY)
+    arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position], 100, 40, arcade.color.BATTLESHIP_GREY)
+    arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position]+20, 40, 100, arcade.color.BATTLESHIP_GREY)
+
+def draw_ship_hitbox(x, y):
+    arcade.draw_xywh_rectangle_outline(ship_hitbox[HIT_BOX_X], ship_hitbox[HIT_BOX_Y],
+                                       100, 100, arcade.color.RED)
 
 if __name__ == '__main__':
     setup()

@@ -42,7 +42,10 @@ movement = 20
 #Hitboxes
 HIT_BOX_X = 0
 HIT_BOX_Y = 1
-ship_hitbox = [ship[ship_x_position]-50, ship[ship_y_position]-30, 100, 100, False, arcade.color.RED]
+HIT_BOX_WIDTH = 2
+HIT_BOX_HEIGHT = 3
+HIT_BOX_COLOR = arcade.color.RED
+ship_hitbox = [ship[ship_x_position]-50, ship[ship_y_position]-30, 100, 100]
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -298,7 +301,7 @@ def draw_ship(x, y):
 
 def draw_ship_hitbox(x, y):
     arcade.draw_xywh_rectangle_outline(ship_hitbox[HIT_BOX_X], ship_hitbox[HIT_BOX_Y],
-                                       100, 100, arcade.color.RED)
+                                       ship_hitbox[HIT_BOX_WIDTH], ship_hitbox[HIT_BOX_HEIGHT], HIT_BOX_COLOR)
 
 if __name__ == '__main__':
     setup()

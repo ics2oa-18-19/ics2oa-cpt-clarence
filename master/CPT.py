@@ -22,17 +22,21 @@ BTN_COLOR = 5
 BTN_CLICKED_COLOR = 6
 BTN_OUTLINE_COLOR = 7
 button_instructions = [WIDTH/2 - 150, HEIGHT/2 - 60, 300, 50, False, arcade.color.BLUE,
-                       arcade.color.GREEN, arcade.color.BLACK]
+                       arcade.color.GREEN, arcade.color.WHITE]
 button_play = [WIDTH/2 - 150, HEIGHT/2, 300, 50, False, arcade.color.BLUE,
-                       arcade.color.GREEN, arcade.color.BLACK]
+                       arcade.color.GREEN, arcade.color.WHITE]
+button_controls = [WIDTH/2 - 150, HEIGHT/2 - 120, 300, 50, False, arcade.color.BLUE,
+                       arcade.color.GREEN, arcade.color.WHITE]
 button_back_menu = [WIDTH/2 - 150, HEIGHT/2 - 100, 300, 50, False, arcade.color.RED,
-                       arcade.color.GREEN, arcade.color.BLACK]
+                       arcade.color.GREEN, arcade.color.WHITE]
 button_pause = [20, HEIGHT-60, 50, 50, False, arcade.color.RED,
-                       arcade.color.GREEN, arcade.color.ASH_GREY]
+                       arcade.color.GREEN, arcade.color.WHITE]
 button_exit = [WIDTH/2 - 150, HEIGHT/2 - 100, 300, 50, False, arcade.color.RED,
-                       arcade.color.GREEN, arcade.color.ASH_GREY]
+                       arcade.color.GREEN, arcade.color.WHITE]
 button_resume = [WIDTH/2 - 150, HEIGHT/2, 300, 50, False, arcade.color.BLUE,
-                       arcade.color.GREEN, arcade.color.ASH_GREY]
+                       arcade.color.GREEN, arcade.color.WHITE]
+button_quit = [WIDTH/2 - 150, HEIGHT/2 - 160, 300, 50, False, arcade.color.RED,
+                       arcade.color.GREEN, arcade.color.WHITE]
 """
 Ship
 """
@@ -128,7 +132,7 @@ def update(delta_time):
 
 #Large Asteroid
         for index in range(1):
-            Large_ast_y[index] -= 5
+            Large_ast_y[index] -= 10
             if Large_ast_y[index] < -175:
                 Large_ast_y[index] = random.randrange(HEIGHT+150, HEIGHT + 300)
                 Large_ast_x[index] = random.randrange(200, 1000)
@@ -173,6 +177,7 @@ def update(delta_time):
 
         if health <= 0:
             current_screen = "gameover"
+            health += 3
 
 def on_draw():
     arcade.start_render()
@@ -180,6 +185,8 @@ def on_draw():
         draw_menu()
     elif current_screen == "instructions":
         draw_instructions()
+    elif current_screen == "customization":
+        draw_controls()
     elif current_screen == "play":
         for x, y in zip(Large_ast_x, Large_ast_y):
             draw_large_asteroid(x, y)
@@ -193,6 +200,8 @@ def on_draw():
     elif current_screen == "pause":
         draw_ship(ship_x_position, ship_y_position)
         draw_pause()
+
+
     elif current_screen == "gameover":
         draw_gameover()
 
@@ -220,18 +229,29 @@ def on_mouse_press(x, y, button, modifiers):
         if (x > button_instructions[BTN_X] and x < button_instructions[BTN_X] + button_instructions[BTN_WIDTH] and
                 y > button_instructions[BTN_Y] and y < button_instructions[BTN_Y] + button_instructions[BTN_HEIGHT]):
             button_instructions[BTN_IS_CLICKED] = True
-
             current_screen = "instructions"
+
         elif (x > button_play[BTN_X] and x < button_play[BTN_X] + button_play[BTN_WIDTH] and
                 y > button_play[BTN_Y] and y < button_play[BTN_Y] + button_play[BTN_HEIGHT]):
             button_play[BTN_IS_CLICKED] = True
             current_screen = "play"
+
+        elif (x > button_controls[BTN_X] and x < button_controls[BTN_X] + button_controls[BTN_WIDTH] and
+                y > button_controls[BTN_Y] and y < button_controls[BTN_Y] + button_controls[BTN_HEIGHT]):
+            button_controls[BTN_IS_CLICKED] = True
+            current_screen = "customization"
 
         if (x > button_play[BTN_X] and x < button_play[BTN_X] + button_play[BTN_WIDTH] and
                 y > button_play[BTN_Y] and y < button_play[BTN_Y] + button_play[BTN_HEIGHT]):
             button_play[BTN_IS_CLICKED] = True
 
     elif current_screen == "instructions":
+        if (x > button_back_menu[BTN_X] and x < button_back_menu[BTN_X] + button_back_menu[BTN_WIDTH] and
+                y > button_back_menu[BTN_Y] and y < button_back_menu[BTN_Y] + button_back_menu[BTN_HEIGHT]):
+            button_back_menu[BTN_IS_CLICKED] = True
+            current_screen = "menu"
+
+    elif current_screen == "customization":
         if (x > button_back_menu[BTN_X] and x < button_back_menu[BTN_X] + button_back_menu[BTN_WIDTH] and
                 y > button_back_menu[BTN_Y] and y < button_back_menu[BTN_Y] + button_back_menu[BTN_HEIGHT]):
             button_back_menu[BTN_IS_CLICKED] = True
@@ -254,18 +274,29 @@ def on_mouse_press(x, y, button, modifiers):
             button_resume[BTN_IS_CLICKED] = True
             current_screen = "play"
 
+    elif current_screen == "gameover":
+        if (x > button_quit[BTN_X] and x < button_quit[BTN_X] + button_quit[BTN_WIDTH] and
+                y > button_quit[BTN_Y] and y < button_quit[BTN_Y] + button_quit[BTN_HEIGHT]):
+            button_quit[BTN_IS_CLICKED] = True
+            current_screen = "menu"
+
 def on_mouse_release(x, y, button, modifiers):
     global current_screen
     if current_screen == "menu":
         button_instructions[BTN_IS_CLICKED] = False
         button_play[BTN_IS_CLICKED] = False
+        button_controls[BTN_IS_CLICKED] = False
     elif current_screen == "instructions":
+        button_back_menu[BTN_IS_CLICKED] = False
+    elif current_screen == "customization":
         button_back_menu[BTN_IS_CLICKED] = False
     elif current_screen == "play":
         button_pause[BTN_IS_CLICKED] = False
     elif current_screen == "pause":
         button_exit[BTN_IS_CLICKED] = False
         button_resume[BTN_IS_CLICKED] = False
+    elif current_screen == "gameover":
+        button_quit[BTN_IS_CLICKED] = False
 
 def draw_menu():
     arcade.set_background_color(arcade.color.ORANGE)
@@ -306,8 +337,25 @@ def draw_menu():
     arcade.draw_text("Play", button_play[BTN_X] + 125, button_play[BTN_Y] + 15,
                         arcade.color.WHITE, font_size=20)
 
+    if button_controls[BTN_IS_CLICKED]:
+        color2 = button_controls[BTN_CLICKED_COLOR]
+    else:
+        color2 = button_controls[BTN_COLOR]
+    arcade.draw_xywh_rectangle_filled(button_controls[BTN_X]-1,
+                                      button_controls[BTN_Y]-2,
+                                      button_controls[BTN_WIDTH]+3,
+                                      button_controls[BTN_HEIGHT]+3,
+                                      button_controls[BTN_OUTLINE_COLOR])
+    arcade.draw_xywh_rectangle_filled(button_controls[BTN_X],
+                                      button_controls[BTN_Y],
+                                      button_controls[BTN_WIDTH],
+                                      button_controls[BTN_HEIGHT],
+                                      color2)
+    arcade.draw_text("Controls", button_controls[BTN_X] + 100, button_controls[BTN_Y] + 15,
+                        arcade.color.WHITE, font_size=20)
+
 def draw_instructions():
-    arcade.set_background_color(arcade.color.BLUE_GRAY)
+    arcade.set_background_color(arcade.color.PURPLE_HEART)
     arcade.draw_text("INSTRUCTIONS", WIDTH / 2, HEIGHT - 200,
                 arcade.color.BLACK, font_size=100, anchor_x="center")
     arcade.draw_text("A to go left, B to go right", WIDTH / 2, HEIGHT / 2,
@@ -330,6 +378,27 @@ def draw_instructions():
     arcade.draw_text("Go Back", button_back_menu[BTN_X] + 100,
                  button_back_menu[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
 
+def draw_controls():
+    arcade.set_background_color(arcade.color.BLACK)
+    arcade.draw_text("CONTROLS", WIDTH / 2, HEIGHT - 200,
+                arcade.color.WHITE, font_size=100, anchor_x="center")
+    if button_back_menu[BTN_IS_CLICKED]:
+        color3 = button_back_menu[BTN_CLICKED_COLOR]
+    else:
+        color3 = button_back_menu[BTN_COLOR]
+    arcade.draw_xywh_rectangle_filled(button_back_menu[BTN_X]-1,
+                                      button_back_menu[BTN_Y]-1,
+                                      button_back_menu[BTN_WIDTH]+3,
+                                      button_back_menu[BTN_HEIGHT]+3,
+                                      arcade.color.WHITE)
+    arcade.draw_xywh_rectangle_filled(button_back_menu[BTN_X],
+                                      button_back_menu[BTN_Y],
+                                      button_back_menu[BTN_WIDTH],
+                                      button_back_menu[BTN_HEIGHT],
+                                      color3)
+
+    arcade.draw_text("Go Back", button_back_menu[BTN_X] + 100,
+                 button_back_menu[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
 def draw_play():
     arcade.set_background_color(arcade.color.BLACK)
     if button_pause[BTN_IS_CLICKED]:
@@ -348,7 +417,9 @@ def draw_play():
                                       color3)
     arcade.draw_text("=", button_pause[BTN_X]+12,
                  button_pause[BTN_Y] + 7, arcade.color.WHITE, font_size=40)
-
+    arcade.draw_text(f"Lives: {health}", 30, 30,
+                     arcade.color.ASH_GREY, font_size=40)
+    
 def draw_pause():
     arcade.draw_text("MENU", WIDTH / 2, HEIGHT - 200,
                      arcade.color.ASH_GREY, font_size=100, anchor_x="center")
@@ -393,23 +464,43 @@ def draw_pause():
                  button_resume[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
 
 def draw_gameover():
-    arcade.set_background_color(arcade.color.BLUE_GRAY)
+    arcade.set_background_color(arcade.color.GREEN_YELLOW)
     arcade.draw_text("GAME OVER", WIDTH / 2, HEIGHT - 200,
                 arcade.color.BLACK, font_size=100, anchor_x="center")
     arcade.draw_text("Your Score:", WIDTH / 2, HEIGHT / 2,
                 arcade.color.BLACK, font_size=30, anchor_x="center")
+    arcade.draw_xywh_rectangle_filled(button_quit[BTN_X]-1,
+                                      button_quit[BTN_Y]-1,
+                                      button_quit[BTN_WIDTH]+3,
+                                      button_quit[BTN_HEIGHT]+3,
+                                      button_quit[BTN_OUTLINE_COLOR])
+    arcade.draw_xywh_rectangle_filled(button_quit[BTN_X],
+                                      button_quit[BTN_Y],
+                                      button_quit[BTN_WIDTH],
+                                      button_quit[BTN_HEIGHT],
+                                      button_quit[BTN_COLOR])
+    arcade.draw_text("Quit", button_quit[BTN_X] + 120,
+                 button_quit[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
 
 def draw_ship(x, y):
-    arcade.set_background_color(arcade.color.BLACK)
+    arcade.draw_circle_filled(ship[ship_x_position]-52, ship[ship_y_position]-52, 25, arcade.color.YELLOW)
+    arcade.draw_circle_filled(ship[ship_x_position]-55, ship[ship_y_position]-50, 20, arcade.color.ORANGE)
+    arcade.draw_circle_filled(ship[ship_x_position]+52, ship[ship_y_position]-52, 25, arcade.color.YELLOW)
+    arcade.draw_circle_filled(ship[ship_x_position]+55, ship[ship_y_position]-50, 20, arcade.color.ORANGE)
     arcade.draw_circle_filled(ship[ship_x_position], ship[ship_y_position], 50, ship_color)
+
     arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position], 100, 40, ship_color)
     arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position]+50, 40, 100, ship_color)
-    arcade.draw_rectangle_filled(ship[ship_x_position]-50, ship[ship_y_position]+20, 20, 100, ship_color)
-    arcade.draw_rectangle_filled(ship[ship_x_position]+50, ship[ship_y_position]+20, 20, 100, ship_color)
-
+    arcade.draw_rectangle_filled(ship[ship_x_position]-30, ship[ship_y_position]+10, 20, 100, ship_color)
+    arcade.draw_rectangle_filled(ship[ship_x_position]+30, ship[ship_y_position]+10, 20, 100, ship_color)
+    arcade.draw_rectangle_filled(ship[ship_x_position]+55, ship[ship_y_position]-20, 30, 60, ship_color)
+    arcade.draw_rectangle_filled(ship[ship_x_position]-55, ship[ship_y_position]-20, 30, 60, ship_color)
+    arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position]+40, 30, 50, arcade.color.WHITE)
+    arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position]+30, 50, 30, arcade.color.WHITE)
 
 def draw_large_asteroid(x, y):
     arcade.draw_circle_filled(x, y, large_asteroid[2], arcade.color.DARK_BROWN)
+    arcade.draw_circle_filled(x, y, 100, arcade.color.COCOA_BROWN)
 
 def draw_medium_asteroid(x, y):
     arcade.draw_circle_filled(x, y, medium_asteroid[2], arcade.color.BROWN_NOSE)
@@ -420,7 +511,6 @@ def draw_small_asteroid(x, y):
 def draw_ship_hitbox(x, y):
     arcade.draw_circle_outline(ship_hitbox[HIT_BOX_X], ship_hitbox[HIT_BOX_Y],
                                        ship_hitbox[HIT_BOX_R], ship_hitbox[HIT_BOX_CLR])
-
 
 if __name__ == '__main__':
     setup()

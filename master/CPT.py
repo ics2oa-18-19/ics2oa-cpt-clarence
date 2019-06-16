@@ -400,6 +400,7 @@ def draw_menu():
     arcade.draw_rectangle_filled(300, 100-12, 120, 20, arcade.color.DARK_GRAY)
     arcade.draw_rectangle_filled(300-50, 100-12, 20, 30, arcade.color.DARK_GRAY)
     arcade.draw_rectangle_filled(300+50, 100-12, 20, 30, arcade.color.DARK_GRAY)
+    
 def draw_instructions():
     arcade.set_background_color(arcade.color.PURPLE)
     arcade.draw_text("INSTRUCTIONS", WIDTH / 2, HEIGHT - 200,
@@ -524,13 +525,15 @@ def draw_pause():
 def update_play(delta_time):
     global left_pressed, right_pressed, ship_x_position, current_screen, ship, MAX_HEALTH, health, score
     if current_screen == "play":
+#Movement
         if left_pressed:
             ship[ship_x_position] -= movement
             ship_hitbox[HIT_BOX_X] -= movement
         elif right_pressed:
             ship[ship_x_position] += movement
             ship_hitbox[HIT_BOX_X] += movement
-        if ship[ship_x_position] > WIDTH - 70:
+#Boundaries 
+      if ship[ship_x_position] > WIDTH - 70:
             ship[ship_x_position] = WIDTH - 70
             ship_hitbox[HIT_BOX_X] = WIDTH - 70
         elif ship[ship_x_position] < 70:

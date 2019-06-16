@@ -108,7 +108,7 @@ HIT_BOX_X = 0
 HIT_BOX_Y = 1
 HIT_BOX_R = 2
 HIT_BOX_CLR = 3
-ship_hitbox = [ship[ship_x_position], ship[ship_y_position], 75, arcade.color.RED]
+ship_hitbox = [ship[ship_x_position], ship[ship_y_position], 75, arcade.color.BLACK]
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")

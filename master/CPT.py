@@ -1,7 +1,6 @@
 import math
 import random
 import arcade
-import os
 
 """
 Screen
@@ -41,7 +40,7 @@ button_restart = [WIDTH/2 - 150, HEIGHT/2, 300, 50, False, arcade.color.DARK_BLU
                        arcade.color.GREEN, arcade.color.WHITE]
 button_grey = [50, 50, 50, 50, False, arcade.color.BATTLESHIP_GREY,
                        arcade.color.GREEN, arcade.color.WHITE]
-button_red = [50, 110, 50, 50, False, arcade.color.RED,
+button_red = [50, 110, 50, 50, False, arcade.color.DARK_RED,
                        arcade.color.GREEN, arcade.color.WHITE]
 button_blue = [50, 170, 50, 50, False, arcade.color.BLUE_SAPPHIRE,
                        arcade.color.GREEN, arcade.color.WHITE]
@@ -63,7 +62,7 @@ Controls
 """
 left_pressed = False
 right_pressed = False
-movement = 30
+movement = 20
 
 """
 Asteroids
@@ -102,13 +101,31 @@ for _ in range(5):
     small_asteroid = [x, y, 50]
 
 """
+Cores
+"""
+cores_x = []
+cores_y = []
+
+for _ in range(1):
+    x = random.randrange(0, WIDTH)
+    y = random.randrange(HEIGHT, HEIGHT*2)
+    cores_x.append(x)
+    cores_y.append(y)
+    cores = [x, y, 30]
+
+"""
+Score
+"""
+score = 0
+
+"""
 Hitbox
 """
 HIT_BOX_X = 0
 HIT_BOX_Y = 1
 HIT_BOX_R = 2
 HIT_BOX_CLR = 3
-ship_hitbox = [ship[ship_x_position], ship[ship_y_position], 75, arcade.color.BLACK]
+ship_hitbox = [ship[ship_x_position], ship[ship_y_position]+20, 75, arcade.color.BLACK]
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -135,13 +152,15 @@ def on_draw():
     elif current_screen == "controls":
         draw_controls()
     elif current_screen == "play":
+        draw_ship_hitbox(ship_hitbox[HIT_BOX_X], ship_hitbox[HIT_BOX_Y])
         for x, y in zip(Large_ast_x, Large_ast_y):
             draw_large_asteroid(x, y)
         for x, y in zip(Medium_ast_x, Medium_ast_y):
             draw_medium_asteroid(x, y)
         for x, y in zip(Small_ast_x, Small_ast_y):
             draw_small_asteroid(x, y)
-        draw_ship_hitbox(ship_hitbox[HIT_BOX_X], ship_hitbox[HIT_BOX_Y])
+        for x, y in zip(cores_x, cores_y):
+            draw_cores(x, y)
         draw_ship(ship_x_position, ship_y_position)
         draw_play()
     elif current_screen == "pause":
@@ -366,26 +385,31 @@ def draw_menu():
 #Ship Display
     arcade.draw_circle_filled(300, 100, 50, ship_color)
     arcade.draw_circle_filled(300, 100+100, 25, ship_color)
+    arcade.draw_circle_filled(300, 100+100, 18, arcade.color.ASH_GREY)
     arcade.draw_rectangle_filled(300, 100, 100, 40, ship_color)
     arcade.draw_rectangle_filled(300, 100+50, 40, 100, ship_color)
     arcade.draw_rectangle_filled(300-30, 100+10, 20, 100, ship_color)
     arcade.draw_rectangle_filled(300+30, 100+10, 20, 100, ship_color)
     arcade.draw_rectangle_filled(300+55, 100-20, 30, 60, ship_color)
     arcade.draw_rectangle_filled(300-55, 100-20, 30, 60, ship_color)
+    arcade.draw_rectangle_filled(300, 100+50, 15, 100, arcade.color.DARK_GRAY)
     arcade.draw_rectangle_filled(300, 100+40, 30, 50, arcade.color.WHITE)
+    arcade.draw_rectangle_filled(300, 100+40, 20, 70, arcade.color.ASH_GREY)
     arcade.draw_rectangle_filled(300, 100+30, 50, 30, arcade.color.ASH_GREY)
     arcade.draw_rectangle_filled(300, 90, 50, 50, arcade.color.DARK_GRAY)
-
+    arcade.draw_rectangle_filled(300, 100-12, 120, 20, arcade.color.DARK_GRAY)
+    arcade.draw_rectangle_filled(300-50, 100-12, 20, 30, arcade.color.DARK_GRAY)
+    arcade.draw_rectangle_filled(300+50, 100-12, 20, 30, arcade.color.DARK_GRAY)
 def draw_instructions():
-    arcade.set_background_color(arcade.color.PURPLE_HEART)
+    arcade.set_background_color(arcade.color.PURPLE)
     arcade.draw_text("INSTRUCTIONS", WIDTH / 2, HEIGHT - 200,
-                arcade.color.ASH_GREY, font_size=100, anchor_x="center")
-    arcade.draw_text("You must dodge the asteroids. Small asteroids take", WIDTH / 2, HEIGHT / 2+100,
-                arcade.color.ASH_GREY, font_size=30, anchor_x="center")
-    arcade.draw_text("away 1 life, medium asteroids take away 2 lives,", WIDTH / 2, HEIGHT / 2+60,
-                arcade.color.ASH_GREY, font_size=30, anchor_x="center")
-    arcade.draw_text("and large asteroids take away all lives. Good Luck", WIDTH / 2, HEIGHT / 2+20,
-                arcade.color.ASH_GREY, font_size=30, anchor_x="center")
+                arcade.color.WHITE, font_size=100, anchor_x="center")
+    arcade.draw_text("You must collect the nova cores while dodging the asteroids.", WIDTH / 2, HEIGHT / 2+100,
+                arcade.color.WHITE, font_size=30, anchor_x="center")
+    arcade.draw_text("Small asteroids take away 1 life, medium asteroids take away 2 lives,", WIDTH / 2, HEIGHT / 2+60,
+                arcade.color.WHITE, font_size=30, anchor_x="center")
+    arcade.draw_text("and large asteroids take away all lives. You have only 3 lives. Good Luck", WIDTH / 2, HEIGHT / 2+20,
+                arcade.color.WHITE, font_size=30, anchor_x="center")
     if button_back_menu[BTN_IS_CLICKED]:
         color3 = button_back_menu[BTN_CLICKED_COLOR]
     else:
@@ -452,7 +476,8 @@ def draw_play():
                  button_pause[BTN_Y] + 7, arcade.color.WHITE, font_size=40)
     arcade.draw_text(f"Lives: {health}", 30, 30,
                      arcade.color.ASH_GREY, font_size=40)
-
+    arcade.draw_text(f"Score: {score}", 1000, 680,
+                     arcade.color.ASH_GREY, font_size=40)
 def draw_pause():
     arcade.draw_text("MENU", WIDTH / 2, HEIGHT - 200,
                      arcade.color.ASH_GREY, font_size=100, anchor_x="center")
@@ -497,7 +522,7 @@ def draw_pause():
                  button_resume[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
 
 def update_play(delta_time):
-    global left_pressed, right_pressed, ship_x_position, current_screen, ship, MAX_HEALTH, health
+    global left_pressed, right_pressed, ship_x_position, current_screen, ship, MAX_HEALTH, health, score
     if current_screen == "play":
         if left_pressed:
             ship[ship_x_position] -= movement
@@ -514,7 +539,7 @@ def update_play(delta_time):
 
 # Large Asteroid
         for index in range(1):
-            Large_ast_y[index] -=7
+            Large_ast_y[index] -= 2
             if Large_ast_y[index] < -175:
                 Large_ast_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
                 Large_ast_x[index] = random.randrange(0, WIDTH)
@@ -529,7 +554,7 @@ def update_play(delta_time):
 
 # Medium Asteroid
         for index in range(3):
-            Medium_ast_y[index] -= 15
+            Medium_ast_y[index] -= 6
             if Medium_ast_y[index] < -175:
                 Medium_ast_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
                 Medium_ast_x[index] = random.randrange(0, WIDTH)
@@ -544,7 +569,7 @@ def update_play(delta_time):
 
 # Small Asteroid
         for index in range(5):
-            Small_ast_y[index] -= 25
+            Small_ast_y[index] -= 8
             if Small_ast_y[index] < -175:
                 Small_ast_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
                 Small_ast_x[index] = random.randrange(0, WIDTH)
@@ -556,6 +581,20 @@ def update_play(delta_time):
                 Small_ast_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
                 Small_ast_x[index] = random.randrange(0, WIDTH)
                 health -= 1
+#Cores
+        for index in range(1):
+            cores_y[index] -= 5
+            if cores_y[index] < -175:
+                cores_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
+                cores_x[index] = random.randrange(0, WIDTH)
+
+            a = cores_x[index] - ship_hitbox[HIT_BOX_X]
+            b = cores_y[index] - ship_hitbox[HIT_BOX_Y]
+            dist = math.sqrt(a ** 2 + b ** 2)
+            if dist < cores[2] + ship_hitbox[HIT_BOX_R]:
+                cores_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
+                cores_x[index] = random.randrange(0, WIDTH)
+                score += 1
 
 #Reset When User is in menu
     elif current_screen == "menu":
@@ -568,16 +607,20 @@ def update_play(delta_time):
         for index in range(5):
             Small_ast_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
             Small_ast_x[index] = random.randrange(0, WIDTH)
+        for index in range(1):
+            cores_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
+            cores_x[index] = random.randrange(0, WIDTH)
         ship[ship_x_position] = WIDTH/2
         ship_hitbox[HIT_BOX_X] = WIDTH/2
         health = 3
+        score = 0
 
 def draw_gameover():
     arcade.set_background_color(arcade.color.DARK_ELECTRIC_BLUE)
     arcade.draw_text("GAME OVER", WIDTH / 2, HEIGHT - 200,
-                arcade.color.BLACK, font_size=100, anchor_x="center")
-    arcade.draw_text("Nice Try!", WIDTH / 2, HEIGHT / 2 + 100,
-                arcade.color.BLACK, font_size=30, anchor_x="center")
+                arcade.color.WHITE, font_size=100, anchor_x="center")
+    arcade.draw_text("Your ship was destroyed", WIDTH / 2, HEIGHT / 2 + 100,
+                arcade.color.WHITE, font_size=30, anchor_x="center")
     arcade.draw_xywh_rectangle_filled(button_quit[BTN_X]-1,
                                       button_quit[BTN_Y]-1,
                                       button_quit[BTN_WIDTH]+3,
@@ -605,7 +648,7 @@ def draw_gameover():
                  button_restart[BTN_Y] + 15, arcade.color.WHITE, font_size=20)
 
 def update_gameover(delta_time):
-    global health, current_screen, left_pressed, right_pressed
+    global health, current_screen, left_pressed, right_pressed, score
     if health <= 0:
         current_screen = "gameover"
 #Reset game when user is in screen "gameover"
@@ -619,10 +662,14 @@ def update_gameover(delta_time):
         for index in range(5):
             Small_ast_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
             Small_ast_x[index] = random.randrange(0, WIDTH)
+        for index in range(1):
+            cores_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
+            cores_x[index] = random.randrange(0, WIDTH)
         left_pressed = False
         right_pressed = False
         ship[ship_x_position] = WIDTH/2
         ship_hitbox[HIT_BOX_X] = WIDTH/2
+        score = 0
 
 #Ship Functions
 def draw_ship(x, y):
@@ -632,23 +679,27 @@ def draw_ship(x, y):
     arcade.draw_circle_filled(ship[ship_x_position]+55, ship[ship_y_position]-50, 20, arcade.color.ORANGE)
     arcade.draw_circle_filled(ship[ship_x_position], ship[ship_y_position], 50, ship_color)
     arcade.draw_circle_filled(ship[ship_x_position], ship[ship_y_position]+100, 25, ship_color)
-    arcade.draw_circle_filled(ship[ship_x_position], ship[ship_y_position]-42, 25, arcade.color.YELLOW)
-    arcade.draw_circle_filled(ship[ship_x_position], ship[ship_y_position]-40, 20, arcade.color.ORANGE)
+    arcade.draw_circle_filled(ship[ship_x_position], ship[ship_y_position]+100, 18, arcade.color.ASH_GREY)
     arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position], 100, 40, ship_color)
     arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position]+50, 40, 100, ship_color)
     arcade.draw_rectangle_filled(ship[ship_x_position]-30, ship[ship_y_position]+10, 20, 100, ship_color)
     arcade.draw_rectangle_filled(ship[ship_x_position]+30, ship[ship_y_position]+10, 20, 100, ship_color)
     arcade.draw_rectangle_filled(ship[ship_x_position]+55, ship[ship_y_position]-20, 30, 60, ship_color)
     arcade.draw_rectangle_filled(ship[ship_x_position]-55, ship[ship_y_position]-20, 30, 60, ship_color)
+    arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position]+50, 15, 100, arcade.color.DARK_GRAY)
     arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position]+40, 30, 50, arcade.color.WHITE)
+    arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position]+40, 20, 70, arcade.color.ASH_GREY)
     arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position]+30, 50, 30, arcade.color.ASH_GREY)
     arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position], 50, 50, arcade.color.DARK_GRAY)
+    arcade.draw_rectangle_filled(ship[ship_x_position], ship[ship_y_position]-12, 120, 20, arcade.color.DARK_GRAY)
+    arcade.draw_rectangle_filled(ship[ship_x_position]-50, ship[ship_y_position]-12, 20, 30, arcade.color.DARK_GRAY)
+    arcade.draw_rectangle_filled(ship[ship_x_position]+50, ship[ship_y_position]-12, 20, 30, arcade.color.DARK_GRAY)
 
 def draw_ship_hitbox(x, y):
     arcade.draw_circle_outline(ship_hitbox[HIT_BOX_X], ship_hitbox[HIT_BOX_Y],
                                        ship_hitbox[HIT_BOX_R], ship_hitbox[HIT_BOX_CLR])
 
-    #Asteroid Functions
+#Asteroid Functions
 def draw_large_asteroid(x, y):
     arcade.draw_circle_filled(x, y, large_asteroid[2], arcade.color.DARK_BROWN)
     arcade.draw_circle_filled(x, y, 105, arcade.color.COCOA_BROWN)
@@ -660,6 +711,12 @@ def draw_medium_asteroid(x, y):
 def draw_small_asteroid(x, y):
     arcade.draw_circle_filled(x, y, small_asteroid[2], arcade.color.DARK_BROWN)
     arcade.draw_circle_filled(x, y, 45, arcade.color.COCOA_BROWN)
+
+def draw_cores(x, y):
+    arcade.draw_circle_filled(x, y, cores[2]+2, arcade.color.WHITE)
+    arcade.draw_circle_filled(x, y, cores[2], arcade.color.BABY_BLUE)
+    arcade.draw_circle_filled(x, y, 20, arcade.color.ASH_GREY)
+    arcade.draw_xywh_rectangle_filled(x-5, y-30, 10, 55, arcade.color.BABY_BLUE)
 
 if __name__ == '__main__':
     setup()

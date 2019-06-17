@@ -62,7 +62,7 @@ Controls
 """
 left_pressed = False
 right_pressed = False
-movement = 30
+movement = 15
 
 """
 Asteroids
@@ -571,7 +571,7 @@ def update_play(delta_time):
 
 # Small Asteroid
         for index in range(5):
-            Small_ast_y[index] -= 7
+            Small_ast_y[index] -= 5
             if Small_ast_y[index] < -175:
                 Small_ast_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
                 Small_ast_x[index] = random.randrange(0, WIDTH)
@@ -585,7 +585,7 @@ def update_play(delta_time):
                 health -= 1
 #Cores
         for index in range(1):
-            cores_y[index] -= 5
+            cores_y[index] -= 2
             if cores_y[index] < -175:
                 cores_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
                 cores_x[index] = random.randrange(0, WIDTH)

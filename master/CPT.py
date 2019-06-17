@@ -62,7 +62,7 @@ Controls
 """
 left_pressed = False
 right_pressed = False
-movement = 20
+movement = 30
 
 """
 Asteroids
@@ -400,7 +400,7 @@ def draw_menu():
     arcade.draw_rectangle_filled(300, 100-12, 120, 20, arcade.color.DARK_GRAY)
     arcade.draw_rectangle_filled(300-50, 100-12, 20, 30, arcade.color.DARK_GRAY)
     arcade.draw_rectangle_filled(300+50, 100-12, 20, 30, arcade.color.DARK_GRAY)
-    
+
 def draw_instructions():
     arcade.set_background_color(arcade.color.PURPLE)
     arcade.draw_text("INSTRUCTIONS", WIDTH / 2, HEIGHT - 200,
@@ -479,6 +479,7 @@ def draw_play():
                      arcade.color.ASH_GREY, font_size=40)
     arcade.draw_text(f"Score: {score}", 1000, 680,
                      arcade.color.ASH_GREY, font_size=40)
+    
 def draw_pause():
     arcade.draw_text("MENU", WIDTH / 2, HEIGHT - 200,
                      arcade.color.ASH_GREY, font_size=100, anchor_x="center")
@@ -525,15 +526,13 @@ def draw_pause():
 def update_play(delta_time):
     global left_pressed, right_pressed, ship_x_position, current_screen, ship, MAX_HEALTH, health, score
     if current_screen == "play":
-#Movement
         if left_pressed:
             ship[ship_x_position] -= movement
             ship_hitbox[HIT_BOX_X] -= movement
         elif right_pressed:
             ship[ship_x_position] += movement
             ship_hitbox[HIT_BOX_X] += movement
-#Boundaries 
-      if ship[ship_x_position] > WIDTH - 70:
+        if ship[ship_x_position] > WIDTH - 70:
             ship[ship_x_position] = WIDTH - 70
             ship_hitbox[HIT_BOX_X] = WIDTH - 70
         elif ship[ship_x_position] < 70:
@@ -542,7 +541,7 @@ def update_play(delta_time):
 
 # Large Asteroid
         for index in range(1):
-            Large_ast_y[index] -= 2
+            Large_ast_y[index] -=1
             if Large_ast_y[index] < -175:
                 Large_ast_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
                 Large_ast_x[index] = random.randrange(0, WIDTH)
@@ -557,7 +556,7 @@ def update_play(delta_time):
 
 # Medium Asteroid
         for index in range(3):
-            Medium_ast_y[index] -= 6
+            Medium_ast_y[index] -= 3
             if Medium_ast_y[index] < -175:
                 Medium_ast_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
                 Medium_ast_x[index] = random.randrange(0, WIDTH)
@@ -572,7 +571,7 @@ def update_play(delta_time):
 
 # Small Asteroid
         for index in range(5):
-            Small_ast_y[index] -= 8
+            Small_ast_y[index] -= 7
             if Small_ast_y[index] < -175:
                 Small_ast_y[index] = random.randrange(HEIGHT + 150, HEIGHT + 300)
                 Small_ast_x[index] = random.randrange(0, WIDTH)
